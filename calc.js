@@ -44,10 +44,15 @@ function startCalc() {
 }
 
 function displayNum(num) {
-    let display = document.querySelector("div .display");
-    if (display.textContent.length < 10) {
-        display.textContent = display.textContent + String(num);
-    }
+    if (calcObject.displayVal.length < 10) {
+        let display = document.querySelector("div .display");
+        calcObject.displayVal = calcObject.displayVal + String(num);
+        display.textContent = calcObject.displayVal
+    }  
+}
+
+calcObject = {
+    displayVal: "",
 }
 
 startCalc()
