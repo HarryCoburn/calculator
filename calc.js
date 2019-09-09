@@ -63,8 +63,7 @@ function addDigitButtons() {
 
 function addOperatorButtons() {
     let operators = ["+", "-", "*", "/","=","AC"];
-    operators.forEach(op => {
-        console.log(op);
+    operators.forEach(op => {        
         let btn = document.getElementById(op);        
         if (op !== "=" && op !== "AC") {
             btn.addEventListener("click", function() {setOperator(btn.id)});
@@ -79,12 +78,13 @@ function addOperatorButtons() {
 }    
 
 function displayNum(num) {
-    let display = document.querySelector("div .display");    
-    // Clear display if an operator has been set
-    if (calcObject.operator === true) {
+    let display = document.querySelector("div .display");
+    let operators = ["+", "-", "*", "/","=","AC"];    
+    // Clear display if an operator has been set    
+    if (calcObject.lastButton in operators) {
+        console.log("Got here")
         display.textContent = "";
-        calcObject.displayVal = "";
-        calcObject.operator = "";
+        calcObject.displayVal = "";        
     }
     if (calcObject.displayVal.length < 10) {
         if (calcObject.displayVal === "0") {
@@ -93,23 +93,20 @@ function displayNum(num) {
         calcObject.displayVal = calcObject.displayVal + String(num);
         }
         display.textContent = calcObject.displayVal;
+        calcObject.lastButton = String(num);
     }  
 }
 
 function setOperator(op) {    
     let display = document.querySelector("div .display");
-    if (calcObject.firstNum === null) {
-        if (display.textContent === true) {
-            // Set first number and operator
+    if (calcObject.firstNum === null) {           
             calcObject.firstNum = Number(display.textContent)
-            calcObject.operator = op;
-        } else {
-            return // do nothing with operators if there's no numbers yet.
-        }
-    } else {
+            calcObject.lastButton = op;        
+    }     
+    else {
         calcObject.secondNum = Number(display.textContent);
         let answer;
-        switch (op) {
+        switch (calcObject.lastButton) {
             case "+":
                 answer = add(calcObject.firstNum, calcObject.secondNum)
                 break;
@@ -117,10 +114,12 @@ function setOperator(op) {
                 break;
         }
         display.textContent = String(answer);
+        calcObject.displayVal = String(answer);
         calcObject.firstNum = answer;
         calcObject.secondNum = null;
         calcObject.operator = op;
     }
+    
     console.log(calcObject);
 }
 
@@ -128,7 +127,8 @@ calcObject = {
     displayVal: "0",
     firstNum: null,
     secondNum: null,
-    operator: ""
+    operator: "",
+    lastButton: "",
 }
 
 startCalc();
