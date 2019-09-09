@@ -46,6 +46,10 @@ function clearCalc() {
 
 
 function startCalc() {
+    // Display the 0
+    let display = document.querySelector("div .display");
+    display.textContent = calcObject.displayVal
+    
     addDigitButtons();
     addOperatorButtons();
 }
@@ -75,16 +79,20 @@ function addOperatorButtons() {
 }    
 
 function displayNum(num) {
-    let display = document.querySelector("div .display");
+    let display = document.querySelector("div .display");    
     // Clear display if an operator has been set
     if (calcObject.operator === true) {
         display.textContent = "";
         calcObject.displayVal = "";
         calcObject.operator = "";
     }
-    if (calcObject.displayVal.length < 10) {        
+    if (calcObject.displayVal.length < 10) {
+        if (calcObject.displayVal === "0") {
+            calcObject.displayVal = String(num);
+        } else {        
         calcObject.displayVal = calcObject.displayVal + String(num);
-        display.textContent = calcObject.displayVal
+        }
+        display.textContent = calcObject.displayVal;
     }  
 }
 
@@ -117,7 +125,7 @@ function setOperator(op) {
 }
 
 calcObject = {
-    displayVal: "",
+    displayVal: "0",
     firstNum: null,
     secondNum: null,
     operator: ""
