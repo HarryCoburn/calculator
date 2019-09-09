@@ -41,18 +41,62 @@ function startCalc() {
         let btn = document.getElementById(String(i));
         btn.addEventListener("click", function() {displayNum(i)});
     }
+
+    let operators = ["+", "-", "*", "/"];
+    for (op in operators) {
+        let btn = document.getElementById(op);
+        btn.addEventListener("click", function() {setOperator(btn.id)});
+    }   
+
 }
 
 function displayNum(num) {
-    if (calcObject.displayVal.length < 10) {
-        let display = document.querySelector("div .display");
+    let display = document.querySelector("div .display");
+    // Clear display if an operator has been set
+    if (calcObject.operator === true) {
+        display.textContent = "";
+        calcObject.displayVal = "";
+        calcObject.operator = "";
+    }
+    if (calcObject.displayVal.length < 10) {        
         calcObject.displayVal = calcObject.displayVal + String(num);
         display.textContent = calcObject.displayVal
     }  
 }
 
+function setOperator(op) {    
+    let display = document.querySelector("div .display");
+    if (calcObject.firstNum === null) {
+        if (display.textContent === true) {
+            // Set first number and operator
+            calcObject.firstNum = Number(display.textContent)
+            calcObject.operator = op;
+        } else {
+            return // do nothing with operators if there's no numbers yet.
+        }
+    } else {
+        calcObject.secondNum = Number(display.textContent);
+        let answer;
+        switch (op) {
+            case "+":
+                answer = add(calcObject.firstNum, calcObject.secondNum)
+                break;
+            default:
+                break;
+        }
+        display.textContent = String(answer);
+        calcObject.firstNum = answer;
+        calcObject.secondNum = null;
+        calcObject.operator = op;
+    }
+    console.log(calcObject);
+}
+
 calcObject = {
     displayVal: "",
+    firstNum: null,
+    secondNum: null,
+    operator: ""
 }
 
 startCalc()
