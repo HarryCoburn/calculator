@@ -36,6 +36,15 @@ function operate(op, x, y) {
     }   
 }
 
+function completeCalc() {
+    console.log("Hit equals");
+}
+
+function clearCalc() {
+    console.log("Hit AC")
+}
+
+
 function startCalc() {
     addDigitButtons();
     addOperatorButtons();
@@ -50,8 +59,9 @@ function addDigitButtons() {
 
 function addOperatorButtons() {
     let operators = ["+", "-", "*", "/","=","AC"];
-    for (op in operators) {
-        let btn = document.getElementById(op);
+    operators.forEach(op => {
+        console.log(op);
+        let btn = document.getElementById(op);        
         if (op !== "=" && op !== "AC") {
             btn.addEventListener("click", function() {setOperator(btn.id)});
         }
@@ -61,10 +71,8 @@ function addOperatorButtons() {
         if (op === "AC") {
             btn.addEventListener("click", clearCalc);
         }
-    }       
-}
-
-    
+    })       
+}    
 
 function displayNum(num) {
     let display = document.querySelector("div .display");
