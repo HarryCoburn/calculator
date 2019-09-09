@@ -37,18 +37,34 @@ function operate(op, x, y) {
 }
 
 function startCalc() {
+    addDigitButtons();
+    addOperatorButtons();
+}
+
+function addDigitButtons() {
     for (let i = 0; i < 10; i++) {
         let btn = document.getElementById(String(i));
         btn.addEventListener("click", function() {displayNum(i)});
     }
+}
 
-    let operators = ["+", "-", "*", "/"];
+function addOperatorButtons() {
+    let operators = ["+", "-", "*", "/","=","AC"];
     for (op in operators) {
         let btn = document.getElementById(op);
-        btn.addEventListener("click", function() {setOperator(btn.id)});
-    }   
-
+        if (op !== "=" && op !== "AC") {
+            btn.addEventListener("click", function() {setOperator(btn.id)});
+        }
+        if (op === "=") {
+            btn.addEventListener("click", completeCalc);
+        }
+        if (op === "AC") {
+            btn.addEventListener("click", clearCalc);
+        }
+    }       
 }
+
+    
 
 function displayNum(num) {
     let display = document.querySelector("div .display");
@@ -99,4 +115,4 @@ calcObject = {
     operator: ""
 }
 
-startCalc()
+startCalc();
