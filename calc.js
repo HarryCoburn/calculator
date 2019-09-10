@@ -1,11 +1,14 @@
-// Calculator state object
-
-calcObject = {
+// Constants
+const calcObject = {
     displayVal: "0",
     firstNum: null,
-    secondNum: null,    
+    secondNum: null,
+    currOp: "",    
     lastButton: "",
 }
+
+const display = document.querySelector("div .display");
+const operators = ["+", "-", "*", "/", "=", "AC"];
 
 // Event handlers
 
@@ -74,19 +77,22 @@ function divide(x, y) {
 
 // Display logic
 
-function displayNum(num) {
-    let display = document.querySelector("div .display");
-    let operators = ["+", "-", "*", "/", "=", "AC"];
+function clearDisplay() {
     // Clear display if an operator has been set    
-    if (operators.includes(calcObject.lastButton)) {
-        console.log("Got here")
+        if (operators.includes(calcObject.lastButton)) {        
         display.textContent = "";
         calcObject.displayVal = "";
+        }
     }
+
+function displayNum(num) {
+    clearDisplay();    
     if (calcObject.displayVal.length < 10) {
         if (calcObject.displayVal === "0") {
+            // Replace display completely
             calcObject.displayVal = String(num);
         } else {
+            // Tack on number
             calcObject.displayVal = calcObject.displayVal + String(num);
         }
         display.textContent = calcObject.displayVal;
@@ -95,22 +101,26 @@ function displayNum(num) {
     console.log(calcObject);
 }
 
+
 // Button logic
 
 function setOperator(op) {
-    let display = document.querySelector("div .display");
-    let operators = ["+", "-", "*", "/", "=", "AC"];
+    // When operator is first hit    
     if (calcObject.firstNum === null) {
         calcObject.firstNum = Number(display.textContent)
         calcObject.lastButton = op;
+        calcObject.currOp = op;
     }
+    // If two operators are hit in a row
     else if (operators.includes(calcObject.lastButton) && operators.includes(op)) {
        calcObject.lastButton = op;
+       calcObject.currOp = op;
     }
+    // Do the calculation
     else {
-        //calcObject.secondNum = Number(display.textContent);
+        calcObject.secondNum = Number(display.textContent);
         let answer;
-        switch (op) {
+        switch (calcObject.currOp) {
             case "+":
                 answer = add(calcObject.firstNum, calcObject.secondNum)
                 break;
@@ -125,11 +135,12 @@ function setOperator(op) {
                 break;
             default:
                 break;
-        }
+        }        
         display.textContent = String(answer);
-        calcObject.displayVal = String(answer);
+        calcObject.displayVal = String(answer);        
         calcObject.firstNum = answer;        
         calcObject.lastButton = op;
+        calcObject.currOp = op;
     }
 
     console.log(calcObject);
@@ -145,10 +156,8 @@ function clearCalc() {
 }
 
 function startCalc() {
-    // Display the 0
-    let display = document.querySelector("div .display");
-    display.textContent = calcObject.displayVal
-
+    // Display the 0    
+    display.textContent = calcObject.displayVal;
     addDigitButtons();
     addOperatorButtons();
 }
