@@ -77,11 +77,10 @@ function divide(x, y) {
 
 // Display logic
 
-function clearDisplay() {
-    // Clear display if an operator has been set    
-        if (operators.includes(calcObject.lastButton)) {        
-        display.textContent = "";
-        calcObject.displayVal = "";
+function clearDisplay() {        
+        if (operators.includes(calcObject.lastButton) || calcObject.lastButton === "") {        
+        display.textContent = "0";
+        calcObject.displayVal = "0";
         }
     }
 
@@ -96,7 +95,7 @@ function displayNum(num) {
             calcObject.displayVal = calcObject.displayVal + String(num);
         }
         display.textContent = calcObject.displayVal;
-        calcObject.lastButton = String(num);
+        calcObject.lastButton = String(num);        
     }
     console.log(calcObject);
 }
@@ -105,8 +104,9 @@ function displayNum(num) {
 // Button logic
 
 function setOperator(op) {
+    if (calcObject.displayVal === "ERROR") clearDisplay();
     // When operator is first hit    
-    if (calcObject.firstNum === null) {
+    if (calcObject.firstNum === null || calcObject.currOp === null) {
         calcObject.firstNum = Number(display.textContent)
         calcObject.lastButton = op;
         calcObject.currOp = op;
@@ -118,24 +118,7 @@ function setOperator(op) {
     }
     // Do the calculation
     else {
-        calcObject.secondNum = Number(display.textContent);
-        let answer;
-        switch (calcObject.currOp) {
-            case "+":
-                answer = add(calcObject.firstNum, calcObject.secondNum)
-                break;
-            case "-":
-                answer = subtract(calcObject.firstNum, calcObject.secondNum)
-                break;
-            case "*":
-                answer = multiply(calcObject.firstNum, calcObject.secondNum)
-                break;
-            case "/":
-                answer = divide(calcObject.firstNum, calcObject.secondNum)
-                break;
-            default:
-                break;
-        }        
+        answer = getAnswer();       
         display.textContent = String(answer);
         calcObject.displayVal = String(answer);        
         calcObject.firstNum = answer;        
@@ -146,13 +129,55 @@ function setOperator(op) {
     console.log(calcObject);
 }
 
+function getAnswer() {
+    calcObject.secondNum = Number(display.textContent);
+    let answer;
+    switch (calcObject.currOp) {
+        case "+":
+            answer = add(calcObject.firstNum, calcObject.secondNum)
+            break;
+        case "-":
+            answer = subtract(calcObject.firstNum, calcObject.secondNum)
+            break;
+        case "*":
+            answer = multiply(calcObject.firstNum, calcObject.secondNum)
+            break;
+        case "/":
+            answer = divide(calcObject.firstNum, calcObject.secondNum)
+            break;
+        default:
+            break;
+    }
+    return answer;
+}
+
 
 function completeCalc() {
-    console.log("Hit equals");
+    if (calcObject.currOp === "") {
+        calcObject.lastButton = "";
+        display.textContent = "0";
+        calcObject.displayVal = "0";
+        return;
+    }
+    if (calcObject.firstNum !== null) {
+    let answer = getAnswer();
+    display.textContent = String(answer);
+    calcObject.displayVal = String(answer);        
+    calcObject.firstNum = null;  
+    calcObject.secondNum = null;      
+    calcObject.lastButton = "";
+    calcObject.currOp = "";
+    }
+    console.log(calcObject);
 }
 
 function clearCalc() {
-    console.log("Hit AC")
+    calcObject.displayVal = 0;
+    calcObject.firstNum = null;
+    calcObject.secondNum = null;
+    calcObject.currOp = "";
+    calcObject.lastButton = "";
+    display.textContent = calcObject.displayVal;
 }
 
 function startCalc() {
