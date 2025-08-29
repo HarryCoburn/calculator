@@ -161,8 +161,8 @@ function completeCalc() {
     }
     if (calcObject.firstNum !== null) {
     let answer = getAnswer();
-    display.textContent = String(answer).substring(0,8);
-    calcObject.displayVal = String(answer).substring(0,8);        
+    display.textContent = String(answer);
+    calcObject.displayVal = String(answer);        
     calcObject.firstNum = null;  
     calcObject.secondNum = null;      
     calcObject.lastButton = "";

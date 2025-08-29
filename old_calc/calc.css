@@ -1,0 +1,62 @@
+body {
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 100px;
+    width: 600px;
+    height: 800px;
+    color: blue;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    grid-template-areas:
+    "header header header header"
+    "button button button button"
+    "button button button button"
+    "button button button button"
+    "button button button button";    
+}
+
+.header {
+    grid-area: header;
+    grid-column-start: 1;
+    grid-column-end: span 4;
+    background-color: pink;   
+}
+
+.buttons {
+    grid-area: button;    
+    grid-column-start: 1;
+    grid-column-end: span 4;
+    grid-row-start: 2;
+    grid-row-end: span 4;
+    background-color: purple;            
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+}
+
+button {    
+    width: 80%;
+    height: 80%;    
+    justify-self: center;
+    align-self: center;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3em;
+    
+}
+
+.display {
+    background-color: white;
+    color: black;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 4em;        
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 30px;
+    width: 500px;
+    height: 100px;
+    line-height: 100px;
+    border: 2px solid black;
+    text-align: right;
+    
+}
