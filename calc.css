@@ -5,30 +5,14 @@ body {
     width: 600px;
     height: 800px;
     color: blue;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(5, 1fr);
-    grid-template-areas:
-    "header header header header"
-    "button button button button"
-    "button button button button"
-    "button button button button"
-    "button button button button";    
+    display: flex;    
 }
 
-.header {
-    grid-area: header;
-    grid-column-start: 1;
-    grid-column-end: span 4;
+.header {    
     background-color: pink;   
 }
 
-.buttons {
-    grid-area: button;    
-    grid-column-start: 1;
-    grid-column-end: span 4;
-    grid-row-start: 2;
-    grid-row-end: span 4;
+.buttons {    
     background-color: purple;            
     display: grid;
     grid-template-columns: repeat(4, 1fr);
