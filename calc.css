@@ -5,7 +5,8 @@ body {
     width: 600px;
     height: 800px;
     color: blue;
-    display: flex;    
+    display: flex;
+    flex-direction: column;    
 }
 
 .header {    
@@ -34,9 +35,7 @@ button {
     color: black;
     font-family: 'Orbitron', sans-serif;
     font-size: 4em;        
-    margin-right: auto;
-    margin-left: auto;
-    margin-top: 30px;
+    margin: 30px auto;    
     width: 500px;
     height: 100px;
     line-height: 100px;
