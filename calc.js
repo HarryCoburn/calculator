@@ -8,6 +8,7 @@ const calcObject = {
 }
 
 const display = document.querySelector("div .display");
+const buttons = ["AC", "BS", "/", "*", "7", "8", "9", "-", "4", "5", "6", "+", "1", "2", "3", "=", "%", "0", "."]
 const operators = ["+", "-", "*", "/", "=", "AC"];
 
 // Event handlers
@@ -181,6 +182,14 @@ function clearCalc() {
 }
 
 function startCalc() {
+    let buttonDiv = document.querySelector(".buttons")    
+    buttons.forEach(function(element) {
+        let newBtn = document.createElement("button")
+        newBtn.setAttribute("id", element)
+        newBtn.innerText = element
+        buttonDiv.appendChild(newBtn)
+
+    })
     // Display the 0    
     display.textContent = calcObject.displayVal;
     addDigitButtons();
