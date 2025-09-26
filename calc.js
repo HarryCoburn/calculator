@@ -3,8 +3,7 @@ const calcObject = {
     displayVal: "0",
     firstNum: null,
     secondNum: null,
-    currOp: "",    
-    lastButton: "",
+    currOp: "",
 }
 
 const display = document.querySelector("div .display");
@@ -30,7 +29,7 @@ function operate(op, x, y) {
             return divide(x, y);
             break;
         case "%":
-            return percent(x,y)
+            return percent(x, y)
             break;
         default:
             return "Bad operator sent to operate()!"
@@ -56,66 +55,12 @@ function divide(x, y) {
     return x / y;
 }
 
-function percent(x, y){
+function percent(x, y) {
     return "TODO"
 }
 
-// Display logic
-
-function clearDisplay() {        
-        if (operators.includes(calcObject.lastButton) || calcObject.lastButton === "") {        
-        display.textContent = "0";
-        calcObject.displayVal = "0";
-        }
-    }
-
-function displayNum(num) {
-    clearDisplay();    
-    if (calcObject.displayVal.length < 10) {
-        if (calcObject.displayVal === "0") {
-            // Replace display completely
-            calcObject.displayVal = String(num);
-        } else {
-            // Tack on number
-            calcObject.displayVal = calcObject.displayVal + String(num);
-        }
-        display.textContent = calcObject.displayVal;
-        calcObject.lastButton = String(num);        
-    }
-    console.log(calcObject);
-}
-
-
-// Button logic
-
-function setOperator(op) {
-    if (calcObject.displayVal === "ERROR") clearDisplay();
-    // When operator is first hit    
-    if (calcObject.firstNum === null || calcObject.currOp === null) {
-        calcObject.firstNum = Number(display.textContent)
-        calcObject.lastButton = op;
-        calcObject.currOp = op;
-    }
-    // If two operators are hit in a row
-    else if (operators.includes(calcObject.lastButton) && operators.includes(op)) {
-       calcObject.lastButton = op;
-       calcObject.currOp = op;
-    }
-    // Do the calculation
-    else {
-        answer = getAnswer();       
-        display.textContent = String(answer);
-        calcObject.displayVal = String(answer);        
-        calcObject.firstNum = answer;        
-        calcObject.lastButton = op;
-        calcObject.currOp = op;
-    }
-
-    console.log(calcObject);
-}
-
 function getAnswer() {
-    calcObject.secondNum = Number(display.textContent);
+    // calcObject.secondNum = Number(display.textContent);
     let answer;
     switch (calcObject.currOp) {
         case "+":
@@ -137,51 +82,130 @@ function getAnswer() {
 }
 
 
-function completeCalc() {
-    if (calcObject.currOp === "") {
-        calcObject.lastButton = "";
+// Display logic
+
+function clearError() {
+    display.textContent = "0";
+    calcObject.displayVal = "0";
+}
+
+
+function clearForOperand() {
+    if (calcObject.currOp !== "" && calcObject.secondNum === null) {
         display.textContent = "0";
         calcObject.displayVal = "0";
-        return;
     }
-    if (calcObject.firstNum !== null) {
-    let answer = getAnswer();
-    display.textContent = String(answer).substring(0,8);
-    calcObject.displayVal = String(answer).substring(0,8);        
-    calcObject.firstNum = null;  
-    calcObject.secondNum = null;      
-    calcObject.lastButton = "";
-    calcObject.currOp = "";
+}
+
+function displayNum(num) {
+    clearForOperand();
+
+    if (calcObject.displayVal.length < 10) {
+        if (calcObject.displayVal === "0") {
+            // Add first number
+            calcObject.displayVal = String(num);
+        } else {
+            // Tack on number
+            calcObject.displayVal = calcObject.displayVal + String(num);
+        }
+        // Update display
+        display.textContent = calcObject.displayVal;
     }
+}
+
+
+// Button logic
+
+function setOperand(num) {
+    if (calcObject.displayVal === "ERROR") {
+        clearError()
+    }
+    // First update the display, then place the displayed number into the correct operand
+    displayNum(num)
+
+    if (calcObject.currOp === "") {
+        calcObject.firstNum = Number(calcObject.displayVal);
+    } else if (calcObject.currOp === "=") {
+        calcObject.currOp = ""
+        calcObject.firstNum = Number(calcObject.displayVal);
+    }
+    else {
+        calcObject.secondNum = Number(calcObject.displayVal);
+    }
+
+    //Debugging
+    console.log(calcObject);
+
+}
+
+
+function setOperator(op) {
+    if (calcObject.displayVal === "ERROR") {
+        clearError()
+    }
+
+
+    if (calcObject.firstNum !== null && calcObject.secondNum === null) {
+        calcObject.currOp = op;
+    }
+
+    else if (calcObject.firstNum !== null && calcObject.secondNum !== null) {
+
+        answer = getAnswer();
+        display.textContent = String(answer);
+        calcObject.displayVal = String(answer);
+        calcObject.firstNum = answer;
+        calcObject.secondNum = null;
+        calcObject.currOp = op;
+    }
+
+    // Debugging
     console.log(calcObject);
 }
 
+
+
+function completeCalc() {
+    if (calcObject.displayVal === "ERROR") {
+        clearError()
+    }
+
+    // Handles the equals button
+    if (calcObject.firstNum !== null && calcObject.secondNum !== null && calcObject.currOp !== "") {
+        let answer = getAnswer();
+        display.textContent = String(answer).substring(0, 8);
+        calcObject.displayVal = String(answer).substring(0, 8);
+        calcObject.firstNum = answer;
+        calcObject.secondNum = null;
+        calcObject.currOp = "=";
+        console.log(calcObject);
+    }
+}
+
 function clearCalc() {
-    calcObject.displayVal = 0;
+    calcObject.displayVal = "0";
     calcObject.firstNum = null;
     calcObject.secondNum = null;
     calcObject.currOp = "";
-    calcObject.lastButton = "";
     display.textContent = calcObject.displayVal;
 }
 
 function startCalc() {
-    let buttonDiv = document.querySelector(".buttons")    
-    buttons.forEach(function(element) {
+    let buttonDiv = document.querySelector(".buttons")
+    buttons.forEach(function (element) {
         let newBtn = document.createElement("button")
         if (element === "=") {
             newBtn.setAttribute("id", "equals")
         } else {
             newBtn.setAttribute("id", element)
-        }        
+        }
         newBtn.innerText = element
         buttonDiv.appendChild(newBtn)
 
-    })
-    // Display the 0    
+    })    
     display.textContent = calcObject.displayVal;
     addDigitButtonEvents();
-    addOperatorButtons();
+    addOperatorButtonEvents();
 }
 
 // Event handlers
@@ -189,21 +213,21 @@ function startCalc() {
 function addDigitButtonEvents() {
     for (let i = 0; i < 10; i++) {
         let btn = document.getElementById(String(i));
-        btn.addEventListener("click", function () { displayNum(i) });
+        btn.addEventListener("click", function () { setOperand(i) });
     }
 }
 
-function addOperatorButtons() {
+function addOperatorButtonEvents() {
     operators.forEach(op => {
         let btn = document.getElementById(op);
-        if (op !== "equals" && op !== "AC") {
-            btn.addEventListener("click", function () { setOperator(btn.id) });
-        }
         if (op === "equals") {
             btn.addEventListener("click", completeCalc);
         }
-        if (op === "AC") {
+        else if (op === "AC") {
             btn.addEventListener("click", clearCalc);
+        }
+        else {
+            btn.addEventListener("click", function () { setOperator(btn.id) });
         }
     })
 }
