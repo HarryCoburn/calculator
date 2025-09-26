@@ -9,32 +9,9 @@ const calcObject = {
 
 const display = document.querySelector("div .display");
 const buttons = ["AC", "BS", "/", "*", "7", "8", "9", "-", "4", "5", "6", "+", "1", "2", "3", "=", "%", "0", "."]
-const operators = ["+", "-", "*", "/", "=", "AC"];
+const operators = ["+", "-", "*", "/", "equals", "AC"];
 
-// Event handlers
 
-function addDigitButtons() {
-    for (let i = 0; i < 10; i++) {
-        let btn = document.getElementById(String(i));
-        btn.addEventListener("click", function () { displayNum(i) });
-    }
-}
-
-function addOperatorButtons() {
-    let operators = ["+", "-", "*", "/", "=", "AC"];
-    operators.forEach(op => {
-        let btn = document.getElementById(op);
-        if (op !== "=" && op !== "AC") {
-            btn.addEventListener("click", function () { setOperator(btn.id) });
-        }
-        if (op === "=") {
-            btn.addEventListener("click", completeCalc);
-        }
-        if (op === "AC") {
-            btn.addEventListener("click", clearCalc);
-        }
-    })
-}
 
 // Calculation functions
 
@@ -51,6 +28,9 @@ function operate(op, x, y) {
             break;
         case "/":
             return divide(x, y);
+            break;
+        case "%":
+            return percent(x,y)
             break;
         default:
             return "Bad operator sent to operate()!"
@@ -74,6 +54,10 @@ function divide(x, y) {
         return "ERROR"
     }
     return x / y;
+}
+
+function percent(x, y){
+    return "TODO"
 }
 
 // Display logic
@@ -185,15 +169,43 @@ function startCalc() {
     let buttonDiv = document.querySelector(".buttons")    
     buttons.forEach(function(element) {
         let newBtn = document.createElement("button")
-        newBtn.setAttribute("id", element)
+        if (element === "=") {
+            newBtn.setAttribute("id", "equals")
+        } else {
+            newBtn.setAttribute("id", element)
+        }        
         newBtn.innerText = element
         buttonDiv.appendChild(newBtn)
 
     })
     // Display the 0    
     display.textContent = calcObject.displayVal;
-    addDigitButtons();
+    addDigitButtonEvents();
     addOperatorButtons();
+}
+
+// Event handlers
+
+function addDigitButtonEvents() {
+    for (let i = 0; i < 10; i++) {
+        let btn = document.getElementById(String(i));
+        btn.addEventListener("click", function () { displayNum(i) });
+    }
+}
+
+function addOperatorButtons() {
+    operators.forEach(op => {
+        let btn = document.getElementById(op);
+        if (op !== "equals" && op !== "AC") {
+            btn.addEventListener("click", function () { setOperator(btn.id) });
+        }
+        if (op === "equals") {
+            btn.addEventListener("click", completeCalc);
+        }
+        if (op === "AC") {
+            btn.addEventListener("click", clearCalc);
+        }
+    })
 }
 
 startCalc();

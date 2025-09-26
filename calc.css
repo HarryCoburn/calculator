@@ -6,7 +6,8 @@ body {
     height: 800px;
     color: blue;
     display: flex;
-    flex-direction: column;    
+    flex-direction: column;
+    
 }
 
 .header {    
@@ -14,21 +15,26 @@ body {
 }
 
 .buttons {    
-    background-color: purple;            
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(4, 1fr);
+    background-color: purple;
+    display: flex;
+    flex-wrap: wrap;    
+    justify-content: space-evenly;
+    align-content: space-between;
+    padding-top: 10px;
+    padding-bottom: 10px;               
 }
 
-button {    
-    width: 80%;
-    height: 80%;    
+button {             
     justify-self: center;
     align-self: center;
     font-family: 'Orbitron', sans-serif;
     font-size: 3em;
+    height: 100px;
+    width: 100px;
+    margin: 20px;
     
 }
+
 
 .display {
     background-color: white;
