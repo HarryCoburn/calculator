@@ -152,7 +152,7 @@ function setOperator(op) {
     else if (calcObject.firstNum !== null && calcObject.secondNum !== null) {
 
         answer = getAnswer();
-        display.textContent = String(answer);
+        display.textContent = String(answer);        
         calcObject.displayVal = String(answer);
         calcObject.firstNum = answer;
         calcObject.secondNum = null;
@@ -175,7 +175,12 @@ function completeCalc() {
         let answer = getAnswer();
         display.textContent = String(answer).substring(0, 8);
         calcObject.displayVal = String(answer).substring(0, 8);
-        calcObject.firstNum = answer;
+        if (answer !== "ERROR") {
+            calcObject.firstNum = answer;    
+        } else {
+            calcObject.firstNum = null;
+        }       
+        
         calcObject.secondNum = null;
         calcObject.currOp = "=";
         console.log(calcObject);
