@@ -100,10 +100,19 @@ function clearForOperand() {
 function displayNum(num) {
     clearForOperand();
 
+    // Prevent double decimal
+    if (calcObject.displayVal.includes(".") && num === ".") {
+        return;
+    }
+
     if (calcObject.displayVal.length < 10) {
         if (calcObject.displayVal === "0") {
-            // Add first number
-            calcObject.displayVal = String(num);
+            if (num === ".") {
+                calcObject.displayVal = "0."
+            } else {
+                calcObject.displayVal = String(num);
+            }
+
         } else {
             // Tack on number
             calcObject.displayVal = calcObject.displayVal + String(num);
@@ -152,7 +161,7 @@ function setOperator(op) {
     else if (calcObject.firstNum !== null && calcObject.secondNum !== null) {
 
         answer = getAnswer();
-        display.textContent = String(answer);        
+        display.textContent = String(answer);
         calcObject.displayVal = String(answer);
         calcObject.firstNum = answer;
         calcObject.secondNum = null;
@@ -176,11 +185,11 @@ function completeCalc() {
         display.textContent = String(answer).substring(0, 8);
         calcObject.displayVal = String(answer).substring(0, 8);
         if (answer !== "ERROR") {
-            calcObject.firstNum = answer;    
+            calcObject.firstNum = answer;
         } else {
             calcObject.firstNum = null;
-        }       
-        
+        }
+
         calcObject.secondNum = null;
         calcObject.currOp = "=";
         console.log(calcObject);
@@ -207,7 +216,7 @@ function startCalc() {
         newBtn.innerText = element
         buttonDiv.appendChild(newBtn)
 
-    })    
+    })
     display.textContent = calcObject.displayVal;
     addDigitButtonEvents();
     addOperatorButtonEvents();
@@ -220,6 +229,8 @@ function addDigitButtonEvents() {
         let btn = document.getElementById(String(i));
         btn.addEventListener("click", function () { setOperand(i) });
     }
+    let btn = document.getElementById(".")
+    btn.addEventListener("click", function () { setOperand(".") });
 }
 
 function addOperatorButtonEvents() {
