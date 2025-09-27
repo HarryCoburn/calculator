@@ -8,7 +8,7 @@ const calcObject = {
 
 const display = document.querySelector("div .display");
 const buttons = ["AC", "BS", "/", "*", "7", "8", "9", "-", "4", "5", "6", "+", "1", "2", "3", "=", "%", "0", "."]
-const operators = ["+", "-", "*", "/", "equals", "AC"];
+const operators = ["+", "-", "*", "/", "%", "equals", "AC", "BS"];
 
 
 
@@ -98,22 +98,23 @@ function clearForOperand() {
 }
 
 function displayNum(num) {
+    
     clearForOperand();
 
     // Prevent double decimal
     if (calcObject.displayVal.includes(".") && num === ".") {
         return;
-    }
+    }     
 
-    if (calcObject.displayVal.length < 10) {
+    if (calcObject.displayVal.length < 9) {
         if (calcObject.displayVal === "0") {
             if (num === ".") {
                 calcObject.displayVal = "0."
             } else {
-                calcObject.displayVal = String(num);
+                calcObject.displayVal = String(num);                
             }
 
-        } else {
+        } else {            
             // Tack on number
             calcObject.displayVal = calcObject.displayVal + String(num);
         }
@@ -126,9 +127,12 @@ function displayNum(num) {
 // Button logic
 
 function setOperand(num) {
+    
     if (calcObject.displayVal === "ERROR") {
         clearError()
     }
+
+    
     // First update the display, then place the displayed number into the correct operand
     displayNum(num)
 
@@ -161,6 +165,13 @@ function setOperator(op) {
     else if (calcObject.firstNum !== null && calcObject.secondNum !== null) {
 
         answer = getAnswer();
+        // Number boundaries
+        if (answer > 999999999) {
+            answer = 999999999
+        } else if (answer < 0.0000001) {
+            answer = 0.0000001
+        }
+
         display.textContent = String(answer);
         calcObject.displayVal = String(answer);
         calcObject.firstNum = answer;
@@ -172,6 +183,39 @@ function setOperator(op) {
     console.log(calcObject);
 }
 
+function computePercent() {
+    if (calcObject.firstNum !== null && calcObject.secondNum === null) {        
+        let percentage = (calcObject.firstNum / 100);        
+        if (percentage > 999999999) {
+            percentage = 999999999
+        } else if (percentage < 0.0000001) {
+            percentage = 0.0000001
+        }        
+        if (percentage === 1e-7) {                  
+            percentage = 0;
+        }
+
+        calcObject.firstNum = percentage;
+        calcObject.displayVal = String(percentage).substring(0,8);
+        display.textContent = calcObject.displayVal;
+        console.log(calcObject)
+    } else if (calcObject.firstNum !== null && calcObject.secondNum !== null) {
+        let percentage = (calcObject.secondNum / 100);
+        if (percentage > 999999999) {
+            percentage = 999999999
+        } else if (percentage < 0.0000001) {
+            percentage = 0.0000001
+        }
+        if (percentage === 1e-7) {                  
+            percentage = 0;
+        }
+        
+        calcObject.secondNum = percentage;
+        calcObject.displayVal = String(percentage).substring(0,10);
+        display.textContent = calcObject.displayVal;
+        console.log(calcObject)
+    }
+}
 
 
 function completeCalc() {
@@ -182,8 +226,13 @@ function completeCalc() {
     // Handles the equals button
     if (calcObject.firstNum !== null && calcObject.secondNum !== null && calcObject.currOp !== "") {
         let answer = getAnswer();
-        display.textContent = String(answer).substring(0, 8);
-        calcObject.displayVal = String(answer).substring(0, 8);
+        if (answer > 999999999) {
+            answer = 999999999
+        } else if (answer < 0.000001) {
+            answer = 0.000001
+        }
+        display.textContent = String(answer).substring(0, 7);
+        calcObject.displayVal = String(answer).substring(0, 7);
         if (answer !== "ERROR") {
             calcObject.firstNum = answer;
         } else {
@@ -222,6 +271,22 @@ function startCalc() {
     addOperatorButtonEvents();
 }
 
+function backSpaceCalc() {
+    let shortenedDisplay = calcObject.displayVal.slice(0, -1);
+    if (shortenedDisplay === "") {
+        shortenedDisplay = "0"
+    }
+    display.textContent = shortenedDisplay;
+    calcObject.displayVal = shortenedDisplay;
+    if (calcObject.secondNum !== null) {
+        calcObject.secondNum = Number(shortenedDisplay)
+    } else {
+        calcObject.firstNum = Number(shortenedDisplay)
+    }
+    //Debugging
+    console.log(calcObject)
+}
+
 // Event handlers
 
 function addDigitButtonEvents() {
@@ -241,6 +306,12 @@ function addOperatorButtonEvents() {
         }
         else if (op === "AC") {
             btn.addEventListener("click", clearCalc);
+        }
+        else if (op === "BS") {
+            btn.addEventListener("click", backSpaceCalc);
+        }
+        else if (op === "%") {
+            btn.addEventListener("click", computePercent);
         }
         else {
             btn.addEventListener("click", function () { setOperator(btn.id) });
