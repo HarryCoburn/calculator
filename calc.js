@@ -55,10 +55,6 @@ function divide(x, y) {
     return x / y;
 }
 
-function percent(x, y) {
-    return "TODO"
-}
-
 function getAnswer() {
     // calcObject.secondNum = Number(display.textContent);
     let answer;
@@ -81,6 +77,17 @@ function getAnswer() {
     return answer;
 }
 
+function bindNumber(num) {
+    if (num > 999999999) {
+        num = 999999999
+    } else if (num < 0.0000001) {
+        num = 0.0000001
+    } else if (num === 1e-7) {
+        num = 0;
+    }
+    return num
+}
+
 
 // Display logic
 
@@ -88,7 +95,6 @@ function clearError() {
     display.textContent = "0";
     calcObject.displayVal = "0";
 }
-
 
 function clearForOperand() {
     if (calcObject.currOp !== "" && calcObject.secondNum === null) {
@@ -98,23 +104,22 @@ function clearForOperand() {
 }
 
 function displayNum(num) {
-    
     clearForOperand();
 
     // Prevent double decimal
     if (calcObject.displayVal.includes(".") && num === ".") {
         return;
-    }     
+    }
 
     if (calcObject.displayVal.length < 9) {
         if (calcObject.displayVal === "0") {
             if (num === ".") {
                 calcObject.displayVal = "0."
             } else {
-                calcObject.displayVal = String(num);                
+                calcObject.displayVal = String(num);
             }
 
-        } else {            
+        } else {
             // Tack on number
             calcObject.displayVal = calcObject.displayVal + String(num);
         }
@@ -127,12 +132,11 @@ function displayNum(num) {
 // Button logic
 
 function setOperand(num) {
-    
+
     if (calcObject.displayVal === "ERROR") {
         clearError()
     }
 
-    
     // First update the display, then place the displayed number into the correct operand
     displayNum(num)
 
@@ -145,78 +149,41 @@ function setOperand(num) {
     else {
         calcObject.secondNum = Number(calcObject.displayVal);
     }
-
-    //Debugging
-    console.log(calcObject);
-
 }
-
 
 function setOperator(op) {
     if (calcObject.displayVal === "ERROR") {
         clearError()
     }
 
-
     if (calcObject.firstNum !== null && calcObject.secondNum === null) {
         calcObject.currOp = op;
     }
 
     else if (calcObject.firstNum !== null && calcObject.secondNum !== null) {
-
-        answer = getAnswer();
-        // Number boundaries
-        if (answer > 999999999) {
-            answer = 999999999
-        } else if (answer < 0.0000001) {
-            answer = 0.0000001
-        }
-
+        answer = bindNum(getAnswer());
         display.textContent = String(answer);
         calcObject.displayVal = String(answer);
         calcObject.firstNum = answer;
         calcObject.secondNum = null;
         calcObject.currOp = op;
     }
-
-    // Debugging
-    console.log(calcObject);
 }
 
 function computePercent() {
-    if (calcObject.firstNum !== null && calcObject.secondNum === null) {        
-        let percentage = (calcObject.firstNum / 100);        
-        if (percentage > 999999999) {
-            percentage = 999999999
-        } else if (percentage < 0.0000001) {
-            percentage = 0.0000001
-        }        
-        if (percentage === 1e-7) {                  
-            percentage = 0;
-        }
-
+    if (calcObject.firstNum !== null && calcObject.secondNum === null) {
+        let percentage = bindNumber((calcObject.firstNum / 100));
         calcObject.firstNum = percentage;
-        calcObject.displayVal = String(percentage).substring(0,8);
+        calcObject.displayVal = String(percentage).substring(0, 8);
         display.textContent = calcObject.displayVal;
-        console.log(calcObject)
+
     } else if (calcObject.firstNum !== null && calcObject.secondNum !== null) {
-        let percentage = (calcObject.secondNum / 100);
-        if (percentage > 999999999) {
-            percentage = 999999999
-        } else if (percentage < 0.0000001) {
-            percentage = 0.0000001
-        }
-        if (percentage === 1e-7) {                  
-            percentage = 0;
-        }
-        
+        let percentage = bindNumber((calcObject.secondNum / 100));      
         calcObject.secondNum = percentage;
-        calcObject.displayVal = String(percentage).substring(0,10);
-        display.textContent = calcObject.displayVal;
-        console.log(calcObject)
+        calcObject.displayVal = String(percentage).substring(0, 8);
+        display.textContent = calcObject.displayVal;        
     }
 }
-
 
 function completeCalc() {
     if (calcObject.displayVal === "ERROR") {
@@ -225,23 +192,16 @@ function completeCalc() {
 
     // Handles the equals button
     if (calcObject.firstNum !== null && calcObject.secondNum !== null && calcObject.currOp !== "") {
-        let answer = getAnswer();
-        if (answer > 999999999) {
-            answer = 999999999
-        } else if (answer < 0.000001) {
-            answer = 0.000001
-        }
-        display.textContent = String(answer).substring(0, 7);
-        calcObject.displayVal = String(answer).substring(0, 7);
+        let answer = bindNumber(getAnswer());        
+        display.textContent = String(answer).substring(0, 8);
+        calcObject.displayVal = String(answer).substring(0, 8);
         if (answer !== "ERROR") {
             calcObject.firstNum = answer;
         } else {
             calcObject.firstNum = null;
         }
-
         calcObject.secondNum = null;
-        calcObject.currOp = "=";
-        console.log(calcObject);
+        calcObject.currOp = "=";        
     }
 }
 
@@ -252,6 +212,22 @@ function clearCalc() {
     calcObject.currOp = "";
     display.textContent = calcObject.displayVal;
 }
+
+function backSpaceCalc() {
+    let shortenedDisplay = calcObject.displayVal.slice(0, -1);
+    if (shortenedDisplay === "") {
+        shortenedDisplay = "0"
+    }
+    display.textContent = shortenedDisplay;
+    calcObject.displayVal = shortenedDisplay;
+    if (calcObject.secondNum !== null) {
+        calcObject.secondNum = Number(shortenedDisplay)
+    } else {
+        calcObject.firstNum = Number(shortenedDisplay)
+    }    
+}
+
+// Start up
 
 function startCalc() {
     let buttonDiv = document.querySelector(".buttons")
@@ -269,22 +245,6 @@ function startCalc() {
     display.textContent = calcObject.displayVal;
     addDigitButtonEvents();
     addOperatorButtonEvents();
-}
-
-function backSpaceCalc() {
-    let shortenedDisplay = calcObject.displayVal.slice(0, -1);
-    if (shortenedDisplay === "") {
-        shortenedDisplay = "0"
-    }
-    display.textContent = shortenedDisplay;
-    calcObject.displayVal = shortenedDisplay;
-    if (calcObject.secondNum !== null) {
-        calcObject.secondNum = Number(shortenedDisplay)
-    } else {
-        calcObject.firstNum = Number(shortenedDisplay)
-    }
-    //Debugging
-    console.log(calcObject)
 }
 
 // Event handlers
